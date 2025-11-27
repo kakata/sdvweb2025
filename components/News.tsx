@@ -1,34 +1,65 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SectionId, NewsItem, SocialPost } from '../types';
 import { FALLBACK_NEWS, FALLBACK_SOCIAL_POSTS } from '../constants';
 import { generateDynamicNews } from '../services/geminiService';
 import { ArrowRight, Calendar, RefreshCw, Heart, MessageCircle, Instagram } from 'lucide-react';
 
 export const News: React.FC = () => {
-    const [newsData, setNewsData] = useState<NewsItem[]>([]);
-    const [socialData, setSocialData] = useState<SocialPost[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [newsData, setNewsData] = useState<NewsItem[]>(FALLBACK_NEWS);
+    const [socialData, setSocialData] = useState<SocialPost[]>(FALLBACK_SOCIAL_POSTS);
+    const [loading, setLoading] = useState(false);
+    const [hasRequested, setHasRequested] = useState(false);
+    const [dataSource, setDataSource] = useState<'fallback' | 'dynamic'>('fallback');
+    const sectionRef = useRef<HTMLElement | null>(null);
 
     useEffect(() => {
+        const section = sectionRef.current;
+        if (!section || hasRequested) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries.some((entry) => entry.isIntersecting)) {
+                    setHasRequested(true);
+                    observer.unobserve(section);
+                }
+            },
+            { threshold: 0.25 }
+        );
+
+        observer.observe(section);
+        return () => observer.disconnect();
+    }, [hasRequested]);
+
+    useEffect(() => {
+        if (!hasRequested) return;
+        let cancelled = false;
+
         const fetchNews = async () => {
             setLoading(true);
             const data = await generateDynamicNews();
 
+            if (cancelled) return;
+
             if (data && data.news.length > 0) {
                 setNewsData(data.news);
                 setSocialData(data.instagram);
+                setDataSource('dynamic');
             } else {
                 setNewsData(FALLBACK_NEWS);
                 setSocialData(FALLBACK_SOCIAL_POSTS);
+                setDataSource('fallback');
             }
             setLoading(false);
         };
 
         fetchNews();
-    }, []);
+        return () => {
+            cancelled = true;
+        };
+    }, [hasRequested]);
 
     return (
-        <section id={SectionId.NEWS} className="py-20 bg-white">
+        <section id={SectionId.NEWS} className="py-20 bg-white" ref={sectionRef}>
             <div className="container mx-auto px-6">
                 {/* Header */}
                 <div className="text-center mb-16">
@@ -164,7 +195,7 @@ export const News: React.FC = () => {
                     )}
                 </div>
 
-                {!loading && (
+                {!loading && dataSource === 'dynamic' && (
                     <div className="text-center mt-12">
                         <p className="text-sm text-slate-400 italic flex items-center justify-center gap-2">
                             <RefreshCw size={12} />

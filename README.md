@@ -15,7 +15,13 @@ View your app in AI Studio: https://ai.studio/apps/drive/1HSd73tym80o3O3Xix5JbLh
 
 1. Install dependencies:
    `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+2. Create `.env.local` in the project root with:
+   ```
+   GEMINI_API_KEY=your-gemini-key
+   # Optional when pointing to a remote backend
+   # VITE_API_BASE_URL=https://your-domain.com
+   ```
 3. Run the app:
-   `npm run dev`
+   - For static preview (without the AI endpoints) use `npm run dev`.
+   - To exercise the secure AI endpoints locally, run `vercel dev` so the `/api` serverless routes are available.
 # sdvweb2025
