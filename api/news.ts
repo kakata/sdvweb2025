@@ -1,6 +1,6 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenerativeAI, SchemaType } from '@google/generative-ai';
 import type { NewsData } from '../types';
+import type { ApiRequest, ApiResponse } from './types';
 
 const API_KEY = process.env.GEMINI_API_KEY;
 const CACHE_TTL_MS = 1000 * 60 * 15; // 15 minutes
@@ -110,7 +110,7 @@ const formatResponse = (raw: NewsData): NewsData => {
 
 const shouldUseCache = () => cachedNews && cachedNews.expiresAt > Date.now();
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'Método no permitido' });

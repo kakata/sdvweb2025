@@ -1,5 +1,5 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import type { ApiRequest, ApiResponse } from './types';
 
 const API_KEY = process.env.GEMINI_API_KEY;
 
@@ -35,7 +35,7 @@ const parseBody = (body: unknown) => {
   return body as Record<string, unknown>;
 };
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: ApiRequest, res: ApiResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Método no permitido' });
