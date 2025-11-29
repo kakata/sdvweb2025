@@ -1,0 +1,13 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # This gets baked into the Vite build (client-side). Only use for public-safe keys.
+        VITE_API_KEY: ${VITE_API_KEY:-}
+    ports:
+      - "8080:80"
+    environment:
+      # Passed for clarity; nginx does not consume it at runtime.
+      - VITE_API_KEY=${VITE_API_KEY:-}
