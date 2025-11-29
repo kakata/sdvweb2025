@@ -39,7 +39,7 @@ export const ChatWidget: React.FC = () => {
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
       {isOpen && (
-        <div className="bg-white rounded-2xl shadow-2xl w-80 sm:w-96 flex flex-col overflow-hidden border border-slate-200 animate-fade-in mb-4">
+        <div className="bg-white rounded-2xl shadow-2xl w-80 sm:w-96 h-[500px] flex flex-col overflow-hidden border border-slate-200 animate-fade-in mb-4">
           {/* Header */}
           <div className="bg-[#EF4444] p-4 flex justify-between items-center text-white">
             <div className="flex items-center gap-2">
@@ -63,7 +63,7 @@ export const ChatWidget: React.FC = () => {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 p-4 h-96 overflow-y-auto bg-slate-50 space-y-4">
+          <div className="flex-1 p-4 overflow-y-auto bg-slate-50 space-y-4">
             {messages.map((msg, idx) => (
               <div
                 key={idx}

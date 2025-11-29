@@ -1,14 +1,14 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import type { ApiRequest, ApiResponse } from './types';
-
-const API_KEY = process.env.GEMINI_API_KEY;
+import { getGeminiApiKey } from './config';
 
 const getModel = () => {
-  if (!API_KEY) {
-    throw new Error('Missing GEMINI_API_KEY environment variable.');
+  const apiKey = getGeminiApiKey();
+  if (!apiKey) {
+    throw new Error('Missing GEMINI_API_KEY (or legacy VITE_API_KEY) environment variable.');
   }
 
-  const genAI = new GoogleGenerativeAI(API_KEY);
+  const genAI = new GoogleGenerativeAI(apiKey);
   return genAI.getGenerativeModel({
     model: 'gemini-2.5-flash-lite-preview-09-2025',
     systemInstruction: `Eres el asistente virtual de la Sociedad Dominicana de Vacunología (SDV). 

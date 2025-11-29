@@ -18,6 +18,7 @@ View your app in AI Studio: https://ai.studio/apps/drive/1HSd73tym80o3O3Xix5JbLh
 2. Create `.env.local` in the project root with:
    ```
    GEMINI_API_KEY=your-gemini-key
+   # Legacy support: VITE_API_KEY=your-gemini-key
    # Optional when pointing to a remote backend
    # VITE_API_BASE_URL=https://your-domain.com
    ```
